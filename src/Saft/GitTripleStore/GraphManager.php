@@ -9,6 +9,7 @@ use Desarrolla2\Cache\Adapter\Memory;
 use Filicious\Filesystem;
 use Filicious\File;
 use Filicious\Local\LocalAdapter;
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 final class GraphManager
 {
@@ -102,14 +103,14 @@ final class GraphManager
      *
      * @param string $graphUri
      *            URI of the graph
-     * @throws \Exception when graph does not exist
+     * @throws Exception when graph does not exist
      * @return Graph Graph for the given uri
      */
     public function getGraph($graphUri)
     {
         self::checkUri($graphUri);
         if (!$this->containsGraph($graphUri)) {
-            throw new \Exception('Graph does not exists: ' . $graphUri);
+            throw new Exception('Graph does not exists: ' . $graphUri);
         }
         
         $allreadyLoaded = $this->cache->has($graphUri);
@@ -132,7 +133,7 @@ final class GraphManager
             $numTriplesRead = $graph->parseFile($absolutePath, 'ntriples');
             $message = sprintf('Graph successfully loaded: %s (%d triples)', $absolutePath, $numTriplesRead);
             $this->log->info($message);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->log->error('Unable to load graph: ' . $absolutePath, array(
                 'exception' => $e
             ));
@@ -144,10 +145,10 @@ final class GraphManager
     private static function checkFileReadability(File $file)
     {
         if (!$file->isFile()) {
-            throw new \Exception('Path is not a file: ' . $file->getPathname());
+            throw new Exception('Path is not a file: ' . $file->getPathname());
         } else 
             if (!$file->isReadable()) {
-                throw new \Exception('File can\'t read: ' . $file->getPathname());
+                throw new Exception('File can\'t read: ' . $file->getPathname());
             }
     }
 
@@ -159,7 +160,23 @@ final class GraphManager
     private static function checkUri($uri)
     {
         if (!Util::isValidUri($uri)) {
-            throw new \InvalidArgumentException('URI is not valid: ' . $uri);
+            throw new InvalidArgumentException('URI is not valid: ' . $uri);
         }
+    }
+    
+    public function saveMapping(File $jsonFile) {
+        if (is_null($jsonFile)) {
+            throw new InvalidArgumentException('$jsonFile is null');
+        } 
+        $json = json_encode($this->graphUriFileMapping, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT);
+        $jsonFile->setContents($json);
+    }
+    
+    public function loadMapping(File $jsonFile) {
+        if (is_null($jsonFile)) {
+            throw new InvalidArgumentException('$jsonFile is null');
+        }
+        $json = $jsonFile->getContents();
+        $this->graphUriFileMapping = json_decode($json, true);
     }
 } 
