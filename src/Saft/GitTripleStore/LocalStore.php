@@ -8,8 +8,6 @@ use Filicious\Filesystem;
 use Filicious\Local\LocalAdapter;
 use Filicious\File;
 use EasyRdf\Graph;
-use Desarrolla2\Cache\Cache;
-use Desarrolla2\Cache\Adapter\Memory;
 
 class LocalStore extends AbstractPatternFragmentTripleStore
 {
@@ -18,7 +16,7 @@ class LocalStore extends AbstractPatternFragmentTripleStore
     protected $fileSystem;
     private $defaultGraphUri;
     private $graphUriFileMapping;
-    private $cache;
+    private $graphUriGraphMapping;
     private $initialized;
     
     public function __construct($baseDir)
@@ -36,10 +34,7 @@ class LocalStore extends AbstractPatternFragmentTripleStore
         $this->log->info('Using base dir: ' . $baseDir);
         
         $this->graphUriFileMapping = array();
-        
-        $adapter = new Memory();
-        $adapter->setOption('limit', 100);
-        $this->cache = new Cache($adapter);
+        $this->graphUriGraphMapping = array();
     }
     
     public function isInitialized()
@@ -88,8 +83,7 @@ class LocalStore extends AbstractPatternFragmentTripleStore
     public function clearGraphs()
     {
         $this->graphUriFileMapping = array();
-        //TODO AbstractAdapter#dropCache get called which alsway throws Exception('not ready yet'); 
-        //$this->cache->dropCache();
+        $this->graphUriGraphMapping = array();
     }
     
     /**
@@ -105,7 +99,7 @@ class LocalStore extends AbstractPatternFragmentTripleStore
     {
         self::checkUri($graphUri);
         $this->graphUriFileMapping[$graphUri] =
-        $this->fileSystem->getFile($relativePath);
+            $this->fileSystem->getFile($relativePath);
     }
     
     /**
@@ -116,7 +110,7 @@ class LocalStore extends AbstractPatternFragmentTripleStore
     {
         self::checkUri($graphUri);
         unset($this->graphUriFileMapping[$graphUri]);
-        $this->cache->delete($graphUri);
+        unset($this->graphUriGraphMapping[$graphUri]);
     }
     
     /**
@@ -162,12 +156,12 @@ class LocalStore extends AbstractPatternFragmentTripleStore
             throw new \RuntimeException('Graph does not exists: ' . $graphUri);
         }
     
-        $allreadyLoaded = $this->cache->has($graphUri);
+        $allreadyLoaded = array_key_exists($graphUri, $this->graphUriGraphMapping);
         if ($allreadyLoaded) {
-            return $this->cache->get($graphUri);
+            return $this->graphUriGraphMapping[$graphUri];
         } else {
             $graph = $this->loadGraph($graphUri);
-            $this->cache->set($graphUri, $graph);
+            $this->graphUriGraphMapping[$graphUri] = $graph;
             return $graph;
         }
     }

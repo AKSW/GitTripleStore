@@ -10,7 +10,6 @@
 	"require" : {
 		"aksw/store-interface" : "develop-dev",
 		"easyrdf/easyrdf" : "*",
-		"desarrolla2/cache" : "dev-master",
 		"filicious/filicious" : "dev-master"
 	},
 	"require-dev" : {

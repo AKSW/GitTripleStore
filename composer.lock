@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "92963c1806935d518aa00831b84cbc7d",
+    "hash": "1f27145ada6b062c133fb951c1fe09d4",
     "packages": [
         {
             "name": "aksw/store-interface",
@@ -45,58 +45,6 @@
                 "issues": "https://github.com/AKSW/StoreInterface/issues"
             },
             "time": "2015-02-17 14:31:31"
-        },
-        {
-            "name": "desarrolla2/cache",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/desarrolla2/Cache.git",
-                "reference": "8de623a701bf8d98859bd08de5acb37e493a0c54"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/desarrolla2/Cache/zipball/8de623a701bf8d98859bd08de5acb37e493a0c54",
-                "reference": "8de623a701bf8d98859bd08de5acb37e493a0c54",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "predis/predis": "*",
-                "raulfraile/ladybug": "v0.7",
-                "symfony/yaml": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Desarrolla2\\Cache\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Daniel González",
-                    "homepage": "http://desarrolla2.com/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Provides an cache interface for several adapters (Apc, File, Mongo, Memcached, Mysql, ... )",
-            "homepage": "https://github.com/desarrolla2/Cache/blob/master/README.md",
-            "keywords": [
-                "apc",
-                "cache",
-                "file",
-                "memcached",
-                "mongo",
-                "mysql",
-                "redis"
-            ],
-            "time": "2014-11-17 10:05:47"
         },
         {
             "name": "easyrdf/easyrdf",
@@ -1305,7 +1253,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "aksw/store-interface": 20,
-        "desarrolla2/cache": 20,
         "filicious/filicious": 20
     },
     "prefer-stable": false,
