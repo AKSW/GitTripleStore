@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/AKSW/StoreInterface.git",
-                "reference": "46ba2f2a2a485c85ac62aea966a024d708fece48"
+                "reference": "618fb7973cb060f9b0444e3634cb72da15d694df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AKSW/StoreInterface/zipball/46ba2f2a2a485c85ac62aea966a024d708fece48",
-                "reference": "46ba2f2a2a485c85ac62aea966a024d708fece48",
+                "url": "https://api.github.com/repos/AKSW/StoreInterface/zipball/618fb7973cb060f9b0444e3634cb72da15d694df",
+                "reference": "618fb7973cb060f9b0444e3634cb72da15d694df",
                 "shasum": ""
             },
             "require": {
@@ -33,14 +33,18 @@
             "autoload": {
                 "psr-4": {
                     "Saft\\StoreInterface\\": "src/",
+                    "Saft\\StoreInterface\\Rest\\": "src/Rest",
                     "Saft\\StoreInterface\\Tests\\": "tests/"
-                }
+                },
+                "classmap": [
+                    "src"
+                ]
             },
             "support": {
                 "source": "https://github.com/AKSW/StoreInterface/tree/develop",
                 "issues": "https://github.com/AKSW/StoreInterface/issues"
             },
-            "time": "2015-02-08 15:52:40"
+            "time": "2015-02-17 14:31:31"
         },
         {
             "name": "desarrolla2/cache",
@@ -404,12 +408,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "09352d340640520f1047ff29f7a8e73129e2eb1c"
+                "reference": "ff902a0beb121a13a4d3c604bd6778a25aeae07a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/09352d340640520f1047ff29f7a8e73129e2eb1c",
-                "reference": "09352d340640520f1047ff29f7a8e73129e2eb1c",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/ff902a0beb121a13a4d3c604bd6778a25aeae07a",
+                "reference": "ff902a0beb121a13a4d3c604bd6778a25aeae07a",
                 "shasum": ""
             },
             "require": {
@@ -445,7 +449,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-            "time": "2015-02-03 20:57:02"
+            "time": "2015-02-12 12:17:11"
         },
         {
             "name": "phpspec/prophecy",
@@ -453,12 +457,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "3a9204c44667c302049ab4eadb02daab789e19ed"
+                "reference": "9ed07757cd5c46fe33d28826327d274bd142a143"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/3a9204c44667c302049ab4eadb02daab789e19ed",
-                "reference": "3a9204c44667c302049ab4eadb02daab789e19ed",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/9ed07757cd5c46fe33d28826327d274bd142a143",
+                "reference": "9ed07757cd5c46fe33d28826327d274bd142a143",
                 "shasum": ""
             },
             "require": {
@@ -505,7 +509,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2015-02-09 17:43:38"
+            "time": "2015-02-16 14:11:36"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1256,12 +1260,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "13ef40ee1437582f86fa805445363d0c694dae3a"
+                "reference": "e1325779b6d5d32891a8b45125d63fd48e992788"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/13ef40ee1437582f86fa805445363d0c694dae3a",
-                "reference": "13ef40ee1437582f86fa805445363d0c694dae3a",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/e1325779b6d5d32891a8b45125d63fd48e992788",
+                "reference": "e1325779b6d5d32891a8b45125d63fd48e992788",
                 "shasum": ""
             },
             "require": {
@@ -1294,7 +1298,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2015-01-25 04:42:01"
+            "time": "2015-02-12 08:47:54"
         }
     ],
     "aliases": [],
