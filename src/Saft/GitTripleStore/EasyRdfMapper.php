@@ -18,31 +18,13 @@ final class EasyRdfMapper
         return static::$parser;        
     }
     
-    /**
-     * @param Graph $graph
-     * @param string $subject uri or blank _:xyz
-     * @param string $predicate uri 
-     * @param string $object uri, blank _:xyz or literal
-     */
-    public static function addStatement($graph, $subject, $predicate, $object)
+    public static function parseSubject($graph, $subject)
     {
-        if (is_null($graph)) {
-            throw new \InvalidArgumentException('$graph is null');
-        } else if (is_null($subject)) {
-            throw new \InvalidArgumentException('$subject is null');
-        } else if (is_null($predicate)) {
-            throw new \InvalidArgumentException('$predicate is null');
-        } else if (is_null($object)) {
-            throw new \InvalidArgumentException('$object is null');
+        $isVariable = is_null($subject) || $subject == '';
+        if ($isVariable) {
+            return null;
         }
-        
-        $graph->add(static::parseSubject($graph, $subject),
-            static::parsePredicate($graph, $predicate),
-            static::parseObject($graph, $object));
-    }
-    
-    private static function parseSubject($graph, $subject)
-    {
+
         $matches = array();
         if (preg_match('/<([^<>]+)>/', $subject, $matches)) {
             // Its a uri
@@ -61,13 +43,23 @@ final class EasyRdfMapper
         }
     }
     
-    private static function parsePredicate($graph, $predicate)
+    public static function parsePredicate($graph, $predicate)
     {
-        return static::unescapeString($predicate);
+        $isVariable = is_null($predicate) || $predicate == '';
+        if ($isVariable) {
+            return null;
+        } else {            
+            return static::unescapeString($predicate);
+        }
     }
     
-    private static function parseObject($graph, $object)
+    public static function parseObject($graph, $object)
     {
+        $isVariable = is_null($object) || $object == '';
+        if ($isVariable) {
+            return null;
+        }
+
         $matches = array();
         if (preg_match('/"(.+)"\^\^<([^<>]+)>/', $object, $matches)) {
             return array(

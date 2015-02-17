@@ -8,6 +8,8 @@ use Filicious\Filesystem;
 use Filicious\Local\LocalAdapter;
 use Filicious\File;
 use EasyRdf\Graph;
+use Saft\StoreInterface\Statement;
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 class LocalStore extends AbstractPatternFragmentTripleStore
 {
@@ -202,6 +204,115 @@ class LocalStore extends AbstractPatternFragmentTripleStore
     
     public function addMultipleStatements(array $statements, $graphUri = null, array $options = array())
     {
+        $this->doTripleOperation($statements, $graphUri,
+            function (Graph $graph, Statement $statement) {
+                $this->addStatement($graph, $statement);
+            }
+        );
+    }
+    
+    private function addStatement(Graph $graph, Statement $statement)
+    {
+        if (!$statement->isConcrete()) {
+            throw new InvalidArgumentException(
+                '$statements contains at least one none concrete statement');
+        }
+        
+        $resource = EasyRdfMapper::parseSubject($graph,
+            $statement->getSubject());
+        $property = EasyRdfMapper::parsePredicate($graph,
+            $statement->getPredicate());
+        $value = EasyRdfMapper::parseObject($graph,
+            $statement->getObject());
+        $graph->add($resource, $property, $value);
+    }
+    
+    public function deleteMultipleStatements(array $statements, $graphUri = null)
+    {
+        $this->doTripleOperation($statements, $graphUri,
+            function (Graph $graph, Statement $statement) {
+                $this->deleteStatement($graph, $statement);
+            }
+        );
+    }
+    
+    private function deleteStatement(Graph $graph, Statement $statement)
+    {
+        $resource = EasyRdfMapper::parseSubject($graph,
+            $statement->getSubject());
+        $property = EasyRdfMapper::parsePredicate($graph,
+            $statement->getPredicate());
+        $value = EasyRdfMapper::parseObject($graph,
+            $statement->getObject());
+        
+        if ($statement->isConcrete()) {            
+            $graph->delete($resource, $property, $value);
+        } else {
+            $statementsToDelete = array();
+            foreach ($statementsToDelete as $statementToDelete) {
+                assert($statementToDelete->isConcrete());
+                $this->deleteStatement($graph, $statementToDelete);
+            }
+        }
+    }
+    
+    public function getMatchingStatements(array $statements, $graphUri = null, array $options = array())
+    {
+        $matchings = array();
+        $this->doTripleOperation($statements, $graphUri,
+            function (Graph $graph, Statement $pattern) {
+                $singleMatchings = getSingleMatchingStatements($graph, $pattern);
+                //TODO Union triples
+                throw new \RuntimeException('Not implemented');
+            }
+        );
+        return $matchings;
+    }
+    
+    private function getSingleMatchingStatements(Graph $graph, Statement $pattern)
+    {
+        $matchings = array();
+        // Iterate over the complete graph
+        foreach ($graph->toRdfPhp() as $resource => $properties) {
+            foreach ($properties as $property => $values) {
+                foreach ($values as $value) {
+                    if ($this->statementMatches($graph, $pattern,
+                            $resource, $property, $value)) {
+                        //TODO Convert EasyRdf triple to Saft Triple 
+                        throw new \RuntimeException('Not implemented');
+                        array_push($matchings, null);
+                    }
+                }
+            }
+        }
+        return $matchings;
+    }
+    
+    public function hasMatchingStatement(array $statements, $graphUri = null)
+    {
+        throw new \RuntimeException('Method not implemented');
+    }
+    
+    private function statementMatches(Graph $graph, Statement $pattern,
+        $resource, $property, $value)
+    {
+        $patternResource = EasyRdfMapper::parseSubject($graph,
+            $pattern->getSubject());
+        $patternProperty = EasyRdfMapper::parsePredicate($graph,
+            $pattern->getPredicate());
+        $patternValue = EasyRdfMapper::parseObject($graph,
+            $pattern->getObject());
+        
+        $resourcesMatch = is_null($patternResource) || $resource == $patternResource;
+        $propertiesMatch = is_null($patternProperty) || $property == $patternProperty;
+        $valuesMatch = is_null($patternValue) || $value == $patternValue;
+        
+        return $resourcesMatch && $propertiesMatch && $valuesMatch;
+    }
+    
+    protected function doTripleOperation(array $statements, $graphUri = null,
+        $operation)
+    {
         if (is_null($statements)) {
             throw new \InvalidArgumentException('$statements is null');
         } else if (empty($statements)) {
@@ -213,7 +324,7 @@ class LocalStore extends AbstractPatternFragmentTripleStore
         
         foreach ($statements as $statement) {
             // Use graph uri in this order:
-            // statement uri (for quads) -> $graphUri -> defaultGraph 
+            // 1) statement uri (for quads), 2) $graphUri, 3) defaultGraph
             $uri = $statement->getGraph();
             if (is_null($uri)) {
                 if (is_null($graphUri)) {
@@ -224,26 +335,8 @@ class LocalStore extends AbstractPatternFragmentTripleStore
             }
             assert(!is_null($uri), 'No graph uri was given');
             $graph = $this->getGraph($uri);
-            EasyRdfMapper::addStatement($graph,
-                $statement->getSubject(),
-                $statement->getPredicate(),
-                $statement->getObject());
+            $operation($graph, $statement);
         }
-    }
-    
-    public function deleteMultipleStatements(array $statements, $graphUri = null)
-    {
-        throw new \RuntimeException('Method not implemented');
-    }
-    
-    public function getMatchingStatements(array $statements, $graphUri = null, array $options = array())
-    {
-        throw new \RuntimeException('Method not implemented');
-    }
-    
-    public function hasMatchingStatement(array $statements, $graphUri = null)
-    {
-        throw new \RuntimeException('Method not implemented');
     }
     
     public function close()
